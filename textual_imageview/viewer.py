@@ -70,11 +70,7 @@ class ImageViewer(Widget):
     def on_mouse_scroll_down(self, event: events.MouseScrollDown):
         """scroll down to zoom out"""
 
-        func_pass = False
         if self.parent.has_focus or not self.nested:
-            func_pass = True
-
-        if func_pass:
 
             offset = self.region.offset
             zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x)) 
@@ -90,11 +86,7 @@ class ImageViewer(Widget):
     def on_mouse_scroll_up(self, event: events.MouseScrollDown):
         """scroll up to zoom in"""
 
-        func_pass = False
         if self.parent.has_focus or not self.nested:
-            func_pass = True
-
-        if func_pass:
 
             offset = self.region.offset
             zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x))
