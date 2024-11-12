@@ -33,8 +33,8 @@ class ImageViewer(Widget):
             nested (bool, optional): Whether the ImageViewer will be a child inside another Widget. Defaults to False.
             id: The ID of the widget in the DOM.
 
-        Setting `nested` to True will make the ImageViewer only capture the mouse scroll up/down when it has focus.
-        (This is useful if it is inside a scrollable container)
+        Setting `nested` to True will make the ImageViewer only capture the mouse scroll up/down when its parent has focus.
+        This is useful when it's a child of another Widget, or you just want to control when it's allowed to zoom.
         
         Note: passing through *args and **kwargs to Widget class is blocked except for the `id` parameter."""
         
