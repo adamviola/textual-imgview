@@ -28,10 +28,11 @@ class ImageViewer(Widget):
         Args:
             image (Image.Image): The image to display.
             min_zoom (int, optional): The minimum zoom level. Defaults to 10.
-            max_zoom (int, optional): The maximum zoom level. Defaults to 0.
+            max_zoom (int, optional): The maximum zoom level. Defaults to 1.
             nested (bool, optional): Whether the ImageViewer will be a child inside another Widget. Defaults to False.
 
-        Setting `nested` to True will make the ImageViewer only respond to mouse events when it has focus. """
+        Setting `nested` to True will make the ImageViewer only capture the mouse scroll up/down when it has focus.
+        (This is useful if it is inside a scrollable container) """
         
         super().__init__()
         if not isinstance(image, Image.Image):
