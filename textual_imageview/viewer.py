@@ -22,6 +22,7 @@ class ImageViewer(Widget):
             min_zoom: int = 10,
             max_zoom: int = 1,
             nested: bool = False,
+            id: str | None = None,
         ):
         """A widget that displays an image and allows zooming and panning.
         
@@ -30,11 +31,14 @@ class ImageViewer(Widget):
             min_zoom (int, optional): The minimum zoom level. Defaults to 10.
             max_zoom (int, optional): The maximum zoom level. Defaults to 1.
             nested (bool, optional): Whether the ImageViewer will be a child inside another Widget. Defaults to False.
+            id: The ID of the widget in the DOM.
 
         Setting `nested` to True will make the ImageViewer only capture the mouse scroll up/down when it has focus.
-        (This is useful if it is inside a scrollable container) """
+        (This is useful if it is inside a scrollable container)
         
-        super().__init__()
+        Note: passing through *args and **kwargs to Widget class is blocked except for the `id` parameter."""
+        
+        super().__init__(id=id)
         if not isinstance(image, Image.Image):
             raise TypeError(
                 f"Expected PIL Image, but received '{type(image).__name__}' instead."
