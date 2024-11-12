@@ -79,6 +79,7 @@ class ImageViewer(Widget):
             offset = self.region.offset
             zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x)) 
             zoom_level = self.image._zoom
+            self.log.event(f"Zoom level: {zoom_level}")
 
             if zoom_level < self.min_zoom:
                 self.image.zoom(1, zoom_position)
@@ -98,6 +99,7 @@ class ImageViewer(Widget):
             offset = self.region.offset
             zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x))
             zoom_level = self.image._zoom
+            self.log.event(f"Zoom level: {zoom_level}")
 
             if zoom_level > self.max_zoom:
                 self.image.zoom(-1, zoom_position)
