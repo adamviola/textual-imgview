@@ -16,8 +16,29 @@ class ImageViewer(Widget):
     }
     """
 
-    def __init__(self, image: Image.Image):
-        super().__init__()
+    def __init__(
+            self,
+            image: Image.Image,
+            min_zoom: int = 10,
+            max_zoom: int = 1,
+            nested: bool = False,
+            id: str | None = None,
+        ):
+        """A widget that displays an image and allows zooming and panning.
+        
+        Args:
+            image (Image.Image): The image to display.
+            min_zoom (int, optional): The minimum zoom level. Defaults to 10.
+            max_zoom (int, optional): The maximum zoom level. Defaults to 1.
+            nested (bool, optional): Whether the ImageViewer will be a child inside another Widget. Defaults to False.
+            id: The ID of the widget in the DOM.
+
+        Setting `nested` to True will make the ImageViewer only capture the mouse scroll up/down when its parent has focus.
+        This is useful when it's a child of another Widget, or you just want to control when it's allowed to zoom.
+        
+        Note: passing through *args and **kwargs to Widget class is blocked except for the `id` parameter."""
+        
+        super().__init__(id=id)
         if not isinstance(image, Image.Image):
             raise TypeError(
                 f"Expected PIL Image, but received '{type(image).__name__}' instead."
@@ -25,6 +46,9 @@ class ImageViewer(Widget):
 
         self.image = ImageView(image)
         self.mouse_down = False
+        self.min_zoom = min_zoom
+        self.max_zoom = max_zoom
+        self.nested = nested
 
     def on_show(self):
         w, h = self.size.width, self.size.height
@@ -44,18 +68,38 @@ class ImageViewer(Widget):
         self.refresh()
 
     def on_mouse_scroll_down(self, event: events.MouseScrollDown):
-        offset = self.region.offset
-        zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x))
-        self.image.zoom(1, zoom_position)
-        self.refresh()
-        event.stop()
+        """scroll down to zoom out"""
+
+        if self.parent.has_focus or not self.nested:
+
+            offset = self.region.offset
+            zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x)) 
+            zoom_level = self.image._zoom
+
+            if zoom_level < self.min_zoom:
+                self.image.zoom(1, zoom_position)
+
+            self.log.event(f"Zoom level: {zoom_level}")
+
+            self.refresh()
+            event.stop()
 
     def on_mouse_scroll_up(self, event: events.MouseScrollDown):
-        offset = self.region.offset
-        zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x))
-        self.image.zoom(-1, zoom_position)
-        self.refresh()
-        event.stop()
+        """scroll up to zoom in"""
+
+        if self.parent.has_focus or not self.nested:
+
+            offset = self.region.offset
+            zoom_position = self.image.rowcol_to_xy(event.y, event.x, (offset.y, offset.x))
+            zoom_level = self.image._zoom
+
+            if zoom_level > self.max_zoom:
+                self.image.zoom(-1, zoom_position)
+
+            self.log.event(f"Zoom level: {zoom_level}")
+
+            self.refresh()
+            event.stop()
 
     def on_mouse_down(self, _: events.MouseDown):
         self.mouse_down = True
